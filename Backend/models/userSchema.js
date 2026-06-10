@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const keysecret = process.env.KEYSECRET;
 
 const userSchema = new mongoose.Schema({
     fname: {
@@ -42,6 +45,114 @@ const userSchema = new mongoose.Schema({
     ],
     carts:Array
 });
+
+userSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 12);
+        this.cpassword = await bcrypt.hash(this.cpassword, 12);
+    }
+    next();
+});
+
+userSchema.methods.generatAuthtoken = async function(){
+    try {
+        let token = jwt.sign({ _id:this._id},keysecret,{
+            expiresIn:"1d"
+        });
+        this.tokens = this.tokens.concat({token:token});
+        await this.save();
+        return token;
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+userSchema.methods.addcartdata = async function(cart){
+    try {
+        this.carts = this.carts.concat(cart);
+        await this.save();
+        return this.carts;
+    } catch (error) {
+        console.log(error + "bhai cart add time aai error");
+    }
+}
+
 const User = new mongoose.model("USER", userSchema);
 
 module.exports = User;
+
+// const userSchema = new mongoose.Schema({
+
+//     fname:{
+//         type:String,
+//         required:true
+//     },
+
+//     email:{
+//         type:String,
+//         unique:true,
+//         required:true
+//     },
+
+//     mobile:{
+//         type:String,
+//         unique:true,
+//         required:true
+//     },
+
+//     password:{
+//         type:String,
+//         required:true
+//     },
+
+//    cart: [
+//   {
+//     product: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: "products"
+//     },
+//     quantity: {
+//       type: Number,
+//       default: 1
+//     }
+//   }
+// ],
+
+// wishlist: [
+//   {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "products"
+//   }
+// ],
+
+// addresses: [
+//   {
+//     fullName: String,
+//     mobile: String,
+//     pincode: String,
+//     state: String,
+//     city: String,
+//     landmark: String,
+//     addressLine1: String,
+//     addressLine2: String,
+//     isDefault: {
+//       type: Boolean,
+//       default: false
+//     }
+//   }
+// ],
+
+// role: {
+//   type: String,
+//   enum: ["customer", "admin"],
+//   default: "customer"
+// }
+
+//     tokens:[{
+//         token:String
+//     }]
+
+// },{
+//     timestamps:true
+// });

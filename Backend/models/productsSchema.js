@@ -1,70 +1,88 @@
 const mongoose = require("mongoose");
 
-const productSchema = new mongoose.Schema({
-    id:String,
-    url:String,
-    detailUrl:String,
-    title:Object,
-    price:Object,
-    description:String,
-    discount:String,
-    tagline:String
+const productSchema = new mongoose.Schema(
+{
+    name:{
+        type:String,
+        required:true,
+        trim:true
+    },
+
+    description:{
+        type:String,
+        required:true
+    },
+
+    category:{
+        type:String,
+        required:true
+    },
+
+    brand:{
+        type:String,
+        required:true
+    },
+
+    images:[
+        {
+            type:String
+        }
+    ],
+
+    price:{
+        mrp:{
+            type:Number,
+            required:true
+        },
+
+        cost:{
+            type:Number,
+            required:true
+        },
+
+        discount:{
+            type:Number,
+            default:0
+        }
+    },
+
+    stock:{
+        type:Number,
+        default:0
+    },
+    isOutOfStock:{
+    type:Boolean,
+    default:false
+},
+
+    averageRating:{
+        type:Number,
+        default:0
+    },
+
+    totalReviews:{
+        type:Number,
+        default:0
+    },
+
+    createdBy:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    }
+
+},
+{
+    timestamps:true
 });
 
-const Products = new mongoose.model("products",productSchema);
+productSchema.index({
+    name:"text",
+    description:"text",
+    brand:"text"
+});
 
-module.exports = Products;
-
-// const mongoose = require("mongoose");
-
-// const productSchema = new mongoose.Schema({
-
-//   name: {
-//     type: String,
-//     required: true
-//   },
-
-//   description: String,
-
-//   category: String,
-
-//   brand: String,
-
-//   images: [String],
-
-//   price: {
-//     mrp: Number,
-//     cost: Number,
-//     discount: Number
-//   },
-
-//   stock: {
-//     type: Number,
-//     default: 0
-//   },
-
-//   seller: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "USER"
-//   },
-
-//   averageRating: {
-//     type: Number,
-//     default: 0
-//   },
-
-//   totalReviews: {
-//     type: Number,
-//     default: 0
-//   }
-
-// }, {
-//   timestamps: true
-// });
-
-// productSchema.index({
-//   name: "text",
-//   description: "text"
-// });
-
-// module.exports = mongoose.model("products",productSchema);
+module.exports =
+mongoose.model(
+    "Product",
+    productSchema
+);

@@ -1,89 +1,143 @@
 const products = [
-    { 
-        id:"products1",
-        url: 'https://rukminim1.flixcart.com/image/150/150/kapoo7k0/electric-kettle/p/6/s/pigeon-favourite-original-imafs7xhj5uwgrh4.jpeg?q=70', 
-        detailUrl: 'https://rukminim1.flixcart.com/image/416/416/kapoo7k0/electric-kettle/p/6/s/pigeon-favourite-original-imafs7xhj5uwgrh4.jpeg?q=70',
-        title: {
-            shortTitle: 'Home & Kitchen',
-            longTitle: 'Pigeon FAVOURITE Electric Kettle  (1.5 L, Silver, Black)'
-        }, 
-        price: {
-            mrp: 1195,
-            cost: 625,
-            discount: '47%'
-        },
-        description: 'This electric kettle from Pigeon will soon become a travelers best friend, a hostelite saviour and an answer to all the midnight cravings. With this handy appliance, you can boil water and use it to make instant noodles, packet soup, coffee and green tea.',
-        discount: 'Extra 10% Off', 
-        tagline: 'Deal of the day' 
+
+{
+    name:"Pigeon FAVOURITE Electric Kettle (1.5 L)",
+
+    description:
+    "This electric kettle from Pigeon will soon become a traveler's best friend, a hostelite saviour and an answer to all the midnight cravings.",
+
+    category:"Home & Kitchen",
+
+    brand:"Pigeon",
+
+    images:[
+        "https://rukminim1.flixcart.com/image/150/150/kapoo7k0/electric-kettle/p/6/s/pigeon-favourite-original-imafs7xhj5uwgrh4.jpeg?q=70",
+        "https://rukminim1.flixcart.com/image/416/416/kapoo7k0/electric-kettle/p/6/s/pigeon-favourite-original-imafs7xhj5uwgrh4.jpeg?q=70"
+    ],
+
+    price:{
+        mrp:1195,
+        cost:625,
+        discount:47
     },
-    { 
-        id:"products2",
-        url: 'https://rukminim1.flixcart.com/image/416/416/kl6wx3k0/sandwich-maker/8/r/d/sandwich-01-flipkart-smartbuy-original-imagydds4zthxt8z.jpeg?q=70', 
-        detailUrl: 'https://rukminim1.flixcart.com/image/416/416/kl6wx3k0/sandwich-maker/8/r/d/sandwich-01-flipkart-smartbuy-original-imagydds4zthxt8z.jpeg?q=70',
-        title: {
-            shortTitle: 'Sandwich Makers',
-            longTitle: 'Flipkart SmartBuy Sandwich 01 Grill  (Black)'
-        },
-        price: {
-            mrp: 1499,
-            cost: 899,
-            discount: '40%'
-        },
-        description: 'This non-stick sandwich toaster .easy to use and very handy. Directly hold over flame to make tasty toasts and toasted sandwiches. Specially designed by keeping your needs in mind, the sandwich maker makes whatever youre doing simpler, smarter and better',
-        discount: 'From 99+5% Off', 
-        tagline: 'Pestige, Nova & more' 
+
+    stock:100,
+
+    averageRating:4.4,
+
+    totalReviews:250
+},
+
+{
+    name:"Flipkart SmartBuy Sandwich Grill",
+
+    description:
+    "This non-stick sandwich toaster is easy to use and very handy. Designed for quick and tasty sandwiches.",
+
+    category:"Kitchen Appliances",
+
+    brand:"Flipkart SmartBuy",
+
+    images:[
+        "https://rukminim1.flixcart.com/image/416/416/kl6wx3k0/sandwich-maker/8/r/d/sandwich-01-flipkart-smartbuy-original-imagydds4zthxt8z.jpeg?q=70"
+    ],
+
+    price:{
+        mrp:1499,
+        cost:899,
+        discount:40
     },
-    { 
-         id:"products3",
-        url: 'https://rukminim1.flixcart.com/image/150/150/kohigsw0/resistance-tube/c/s/e/new-adjustable-single-resistance-tube-multicolor-na-ajro-deal-original-imag2xg88mhmwxz5.jpeg?q=70', 
-        detailUrl: 'https://rukminim1.flixcart.com/image/416/416/kohigsw0/resistance-tube/c/s/e/new-adjustable-single-resistance-tube-multicolor-na-ajro-deal-original-imag2xg88mhmwxz5.jpeg?q=70', 
-        title: {
-            shortTitle: 'Fitness Gear',
-            longTitle: 'AJRO DEAL New Adjustable Single Resistance Tube (Multicolor) Resistance Tube  (Multicolor)'
-        }, 
-        price: {
-            mrp: 499,
-            cost: 166,
-            discount: '66%'
-        },
-        description: 'This unique product can tone your back muscles, reduce belly fat, improve blood circulation and also improves your body posture. It increases the stamina, energy and vitality of the body. The elastic resistance of the rubber training rope can be used to train and exercise in whichever way you want, according to your physical needs.',
-        discount: 'Upto 70% Off', 
-        tagline: 'Deal of the Day' 
+
+    stock:75,
+
+    averageRating:4.2,
+
+    totalReviews:175
+},
+
+{
+    name:"AJRO DEAL Resistance Tube",
+
+    description:
+    "Adjustable resistance tube for strength training, posture improvement and fat reduction.",
+
+    category:"Fitness",
+
+    brand:"AJRO DEAL",
+
+    images:[
+        "https://rukminim1.flixcart.com/image/150/150/kohigsw0/resistance-tube/c/s/e/new-adjustable-single-resistance-tube-multicolor-na-ajro-deal-original-imag2xg88mhmwxz5.jpeg?q=70",
+        "https://rukminim1.flixcart.com/image/416/416/kohigsw0/resistance-tube/c/s/e/new-adjustable-single-resistance-tube-multicolor-na-ajro-deal-original-imag2xg88mhmwxz5.jpeg?q=70"
+    ],
+
+    price:{
+        mrp:499,
+        cost:166,
+        discount:66
     },
-    { 
-         id:"products4",
-        url: 'https://rukminim1.flixcart.com/image/300/300/kll7bm80/smartwatch/c/1/n/43-mo-sw-sense-500-android-ios-molife-original-imagyzyycnpujyjh.jpeg?q=70', 
-        detailUrl: 'https://rukminim1.flixcart.com/image/416/416/kll7bm80/smartwatch/c/1/n/43-mo-sw-sense-500-android-ios-molife-original-imagyzyycnpujyjh.jpeg?q=70',
-        title: {
-            shortTitle: 'Smart Watches',
-            longTitle: 'Molife Sense 500 Smartwatch  (Black Strap, Freesize)',
-        }, 
-        price: {
-            mrp: 6999,
-            cost: 4049,
-            discount: '42%'
-        },
-        description: 'The Molife Sense 500, a brilliant smartwatch with a beautiful large display. Say hello to the infinity 1.7-inch display with 2.5D curved edges. Thanks to seamless Bluetooth 5.0 connectivity, you wont have to keep waiting. Bring a change to your outfit every day with changeable straps. A splash of color every day keeps the boredom away.',
-        discount: 'Grab Now', 
-        tagline: 'Best Seller' 
+
+    stock:120,
+
+    averageRating:4.1,
+
+    totalReviews:95
+},
+
+{
+    name:"Molife Sense 500 Smartwatch",
+
+    description:
+    "Smartwatch featuring a 1.7-inch display, Bluetooth 5.0 connectivity and interchangeable straps.",
+
+    category:"Electronics",
+
+    brand:"Molife",
+
+    images:[
+        "https://rukminim1.flixcart.com/image/300/300/kll7bm80/smartwatch/c/1/n/43-mo-sw-sense-500-android-ios-molife-original-imagyzyycnpujyjh.jpeg?q=70",
+        "https://rukminim1.flixcart.com/image/416/416/kll7bm80/smartwatch/c/1/n/43-mo-sw-sense-500-android-ios-molife-original-imagyzyycnpujyjh.jpeg?q=70"
+    ],
+
+    price:{
+        mrp:6999,
+        cost:4049,
+        discount:42
     },
-    { 
-         id:"products5",
-        url: 'https://rukminim1.flixcart.com/image/416/416/k3uhhu80/hair-dryer/n/m/t/nova-2800-w-professional-nhp-8220-original-imafmvwfhmzsxdrw.jpeg?q=70',
-        detailUrl: 'https://rukminim1.flixcart.com/image/416/416/k3uhhu80/hair-dryer/n/m/t/nova-2800-w-professional-nhp-8220-original-imafmvwfhmzsxdrw.jpeg?q=70', 
-        title: {
-            shortTitle: 'Trimmers, Dryers & more',
-            longTitle: 'Nova Professional NHP 8220 Hair Dryer  (1800 W, Multicolor)'
-        }, 
-        price: {
-            mrp: 1899,
-            cost: 1124,
-            discount: '40%'
-        },
-        description: '',
-        discount: 'From ₹499', 
-        tagline: 'Kubra, Nova & more' 
-    }
+
+    stock:50,
+
+    averageRating:4.5,
+
+    totalReviews:430
+},
+
+{
+    name:"Nova Professional NHP 8220 Hair Dryer",
+
+    description:
+    "1800W professional hair dryer suitable for quick drying and styling.",
+
+    category:"Personal Care",
+
+    brand:"Nova",
+
+    images:[
+        "https://rukminim1.flixcart.com/image/416/416/k3uhhu80/hair-dryer/n/m/t/nova-2800-w-professional-nhp-8220-original-imafmvwfhmzsxdrw.jpeg?q=70"
+    ],
+
+    price:{
+        mrp:1899,
+        cost:1124,
+        discount:40
+    },
+
+    stock:80,
+
+    averageRating:4.3,
+
+    totalReviews:140
+}
+
 ];
 
 module.exports = products;

@@ -1,150 +1,197 @@
-const products = require("../models/productsSchema");
+const Product =
+require("../models/productsSchema");
+exports.createProduct = async(req,res)=>{
 
-exports.getProducts = async (req, res) => {
-    try {
-        const producstdata = await products.find();
-        console.log(producstdata + "data here");
-        res.status(201).json(producstdata);
-    } catch (error) {
-        console.log("error" + error.message);
+try{
+
+    const product =
+    await Product.create({
+
+        ...req.body,
+
+        createdBy:req.user._id
+
+    });
+
+    res.status(201).json(product);
+
+}catch(error){
+
+    res.status(500).json({
+        error:error.message
+    });
+}
+};
+
+exports.getProducts =
+async(req,res)=>{
+
+try{
+
+    const page =
+    Number(req.query.page) || 1;
+
+    const limit =
+    Number(req.query.limit) || 10;
+
+    const skip =
+    (page - 1) * limit;
+
+    let query = {};
+
+    if(req.query.category){
+
+        query.category =
+        req.query.category;
     }
+
+    if(req.query.brand){
+
+        query.brand =
+        req.query.brand;
+    }
+
+    const products =
+    await Product.find(query)
+    .skip(skip)
+    .limit(limit);
+
+    res.json(products);
+
+}catch(error){
+
+    res.status(500).json({
+        error:error.message
+    });
+}
+};
+
+exports.getProduct =
+async(req,res)=>{
+
+try{
+
+    const product =
+    await Product.findById(
+        req.params.id
+    );
+
+    if(!product){
+
+        return res.status(404)
+        .json({
+            message:"Product not found"
+        });
+    }
+
+    res.json(product);
+
+}catch(error){
+
+    res.status(500).json({
+        error:error.message
+    });
+}
+};
+
+exports.searchProducts =
+async(req,res)=>{
+
+try{
+
+    const keyword =
+    req.query.q;
+
+if(!keyword){
+
+    return res.status(400)
+    .json({
+        message:
+        "Search keyword required"
+    });
 }
 
-exports.getProductsOne = async (req, res) => {
+    const products =
+    await Product.find({
 
-    try {
-        const { id } = req.params;
-        console.log(id);
+        $text:{
+            $search:keyword
+        }
 
-        const individual = await products.findOne({ id: id });
-        console.log(individual + "individual data here");
+    });
 
-        res.status(201).json(individual);
-    } catch (error) {
-        res.status(400).json(error);
-    }
+    res.json(products);
+
+}catch(error){
+
+    res.status(500).json({
+        error:error.message
+    });
+}
+};
+
+exports.updateProduct =
+async(req,res)=>{
+
+try{
+
+    const product =
+    await Product.findByIdAndUpdate(
+
+        req.params.id,
+
+        req.body,
+
+        {
+            new:true
+        }
+
+    );
+
+if(!product){
+
+    return res.status(404)
+    .json({
+        message:"Product not found"
+    });
 }
 
+res.json(product);
 
-// exports.createProduct = async (req, res) => {
-//   try {
+}catch(error){
 
-//     const product = await products.create(req.body);
+    res.status(500).json({
+        error:error.message
+    });
+}
+};
 
-//     res.status(201).json(product);
+exports.deleteProduct =
+async(req,res)=>{
 
-//   } catch (error) {
+try{
 
-//     res.status(500).json(error);
+    const product =
+await Product.findByIdAndDelete(
+    req.params.id
+);
 
-//   }
-// };
+if(!product){
 
-// exports.updateProduct = async (req, res) => {
+    return res.status(404)
+    .json({
+        message:"Product not found"
+    });
+}
 
-//   try {
+res.json({
+    message:"Product deleted"
+});
 
-//     const product =
-//       await products.findByIdAndUpdate(
-//         req.params.id,
-//         req.body,
-//         {
-//           new: true
-//         }
-//       );
+}catch(error){
 
-//     res.json(product);
-
-//   } catch (error) {
-
-//     res.status(500).json(error);
-
-//   }
-// };
-
-// exports.deleteProduct = async (req, res) => {
-
-//   try {
-
-//     await products.findByIdAndDelete(
-//       req.params.id
-//     );
-
-//     res.json({
-//       message: "Product deleted"
-//     });
-
-//   } catch (error) {
-
-//     res.status(500).json(error);
-
-//   }
-// };
-
-// exports.searchProducts = async (req, res) => {
-
-//   try {
-
-//     const q = req.query.q;
-
-//     const result =
-//       await products.find({
-//         $text: {
-//           $search: q
-//         }
-//       });
-
-//     res.json(result);
-
-//   } catch (error) {
-
-//     res.status(500).json(error);
-
-//   }
-
-// };
-
-// exports.filterProducts = async (req, res) => {
-
-//   try {
-
-//     let query = {};
-
-//     if (req.query.category) {
-//       query.category = req.query.category;
-//     }
-
-//     if (req.query.brand) {
-//       query.brand = req.query.brand;
-//     }
-
-//     if (
-//       req.query.minPrice ||
-//       req.query.maxPrice
-//     ) {
-
-//       query["price.cost"] = {};
-
-//       if (req.query.minPrice) {
-//         query["price.cost"].$gte =
-//           Number(req.query.minPrice);
-//       }
-
-//       if (req.query.maxPrice) {
-//         query["price.cost"].$lte =
-//           Number(req.query.maxPrice);
-//       }
-//     }
-
-//     const result =
-//       await products.find(query);
-
-//     res.json(result);
-
-//   } catch (error) {
-
-//     res.status(500).json(error);
-
-//   }
-
-// };
+    res.status(500).json({
+        error:error.message
+    });
+}
+};

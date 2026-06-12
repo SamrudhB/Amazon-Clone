@@ -1,54 +1,107 @@
-// const Review =
-// require("../models/reviewSchema");
+const Review =
+require("../models/reviewSchema");
 
-// const Product =
-// require("../models/productsSchema");
+const Order =
+require("../models/ordersSchema");
 
-// exports.createReview =
-// async (req, res) => {
+const Product =
+require("../models/productsSchema");
 
-//   try {
+const User =
+require("../models/userSchema");
 
-//     const review =
-//       await Review.create({
+exports.addReview =
+async(req,res)=>{
 
-//         user: req.userID,
+try{
 
-//         product: req.params.id,
+    const {
+        productId,
+        rating,
+        comment
+    } = req.body;
 
-//         rating: req.body.rating,
+    const existingReview =
+await Review.findOne({
 
-//         review: req.body.review
+    user:req.user._id,
 
-//       });
+    product:productId
 
-//     const reviews =
-//       await Review.find({
-//         product: req.params.id
-//       });
+});
 
-//     const avg =
-//       reviews.reduce(
-//         (sum, item) =>
-//           sum + item.rating,
-//         0
-//       ) / reviews.length;
+if(existingReview){
 
-//     await Product.findByIdAndUpdate(
-//       req.params.id,
-//       {
-//         averageRating: avg,
-//         totalReviews:
-//           reviews.length
-//       }
-//     );
+    return res.status(400)
+    .json({
 
-//     res.json(review);
+        message:
+        "Review already submitted"
 
-//   } catch (error) {
+    });
+}
 
-//     res.status(500).json(error);
+    const review =
+    await Review.create({
 
-//   }
+        user:req.user._id,
 
-// };
+        product:productId,
+
+        rating,
+
+        comment
+
+    });
+
+    const reviews =
+    await Review.find({
+        product:productId
+    });
+
+    const avg =
+    reviews.reduce(
+        (sum,item)=>
+        sum + item.rating,
+        0
+    ) / reviews.length;
+
+    await Product.findByIdAndUpdate(
+        productId,
+        {
+            averageRating:avg,
+            totalReviews:reviews.length
+        }
+    );
+
+    res.status(201).json(review);
+
+}catch(error){
+
+    res.status(500).json({
+        error:error.message
+    });
+}
+};
+
+exports.getReviews =
+async(req,res)=>{
+
+try{
+
+    const reviews =
+    await Review.find({
+        product:req.params.productId
+    })
+    .populate("user","fname")
+    .populate("product");
+
+    res.json(reviews);
+
+}catch(error){
+
+    res.status(500).json({
+        error:error.message
+    });
+}
+};

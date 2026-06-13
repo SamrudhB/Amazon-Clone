@@ -1,27 +1,28 @@
 const express =
-require("express");
+    require("express");
 
 const router =
-express.Router();
+    express.Router();
 
 const auth =
-require("../middleware/auth");
+    require("../middleware/auth");
 
 const adminAuth =
-require("../middleware/adminAuth");
+    require("../middleware/adminAuth");
 
 const {
 
- createProduct,
- getProducts,
- getProduct,
- updateProduct,
- deleteProduct,
- searchProducts
+    createProduct,
+    getProducts,
+    getProduct,
+    updateProduct,
+    deleteProduct,
+    searchProducts,
+    fetchCategory
 
 }
-=
-require("../controllers/productController");
+    =
+    require("../controllers/productController");
 
 //public
 
@@ -33,6 +34,11 @@ router.get(
 router.get(
     "/search",
     searchProducts
+);
+
+router.get(
+    "/categories",
+    fetchCategory,
 );
 
 router.get(
@@ -61,5 +67,7 @@ router.delete(
     adminAuth,
     deleteProduct
 );
+
+
 
 module.exports = router;

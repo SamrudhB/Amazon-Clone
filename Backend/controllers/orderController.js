@@ -1,75 +1,153 @@
-// const User =
-// require("../models/userSchema");
+const Order = require("../models/ordersSchema");
+const User = require("../models/userSchema");
+const Product = require("../models/productsSchema");
+exports.createOrder = async(req,res)=>{
+try{
 
-// const Order =
-// require("../models/orderSchema");
+    const {
+        products
+    } = req.body;
 
-// exports.createOrder =
-// async (req, res) => {
+    let totalAmount = 0;
 
-//   try {
+    const orderProducts = [];
 
-//     const user =
-//       await User.findById(
-//         req.userID
-//       ).populate(
-//         "cart.product"
-//       );
+    for(let item of products){
 
-//     let total = 0;
+        const product =
+        await Product.findById(item.product);
 
-//     const items =
-//       user.cart.map(item => {
+        if(
+    product.stock <
+    item.quantity
+){
 
-//         total +=
-//           item.product.price.cost *
-//           item.quantity;
+    return res.status(400)
+    .json({
+        message:
+        `${product.name} out of stock`
+    });
+}
 
-//         return {
+        if(!product){
 
-//           product:
-//             item.product._id,
+            return res.status(404).json({
+                message:"Product not found"
+            });
+        }
 
-//           quantity:
-//             item.quantity,
+        totalAmount +=
+        product.price.cost *
+        item.quantity;
 
-//           price:
-//             item.product.price.cost
+        orderProducts.push({
+            product:product._id,
+            quantity:item.quantity,
+            price:product.price.cost
+        });
 
-//         };
+        product.stock -= item.quantity;
+        if(product.stock <= 0){
+    product.stock = 0;
+    product.isOutOfStock = true;
+}
 
-//       });
+        await product.save();
+    }
 
-//     const order =
-//       await Order.create({
+    const order =
+    await Order.create({
 
-//         user:
-//           req.userID,
+        user:req.user._id,
 
-//         products:
-//           items,
+        products:orderProducts,
 
-//         totalAmount:
-//           total,
+        totalAmount
 
-//         shippingAddress:
-//           req.body.shippingAddress,
+    });
 
-//         paymentMethod:
-//           req.body.paymentMethod
+    res.status(201).json(order);
 
-//       });
+}catch(error){
 
-//     user.cart = [];
+    res.status(500).json({
+        error:error.message
+    });
+}
+};
 
-//     await user.save();
+exports.getMyOrders =
+async(req,res)=>{
 
-//     res.status(201).json(order);
+try{
 
-//   } catch (error) {
+    const orders =
+    await Order.find({
+        user:req.user._id
+    })
+    .populate("products.product");
 
-//     res.status(500).json(error);
+    res.json(orders);
 
-//   }
+}catch(error){
 
-// };
+    res.status(500).json({
+        error:error.message
+    });
+}
+};
+
+exports.cancelOrder =
+async(req,res)=>{
+
+try{
+
+    const order =
+await Order.findOne({
+
+    _id:req.params.id,
+
+    user:req.user._id
+
+});
+
+    if(!order){
+
+        return res.status(404).json({
+            message:"Order not found"
+        });
+    }
+
+    for(
+    let item
+    of order.products
+){
+
+    await Product
+    .findByIdAndUpdate(
+
+        item.product,
+
+        {
+            $inc:{
+                stock:
+                item.quantity
+            }
+        }
+
+    );
+}
+    order.orderStatus =
+    "Cancelled";
+
+    await order.save();
+
+    res.json(order);
+
+}catch(error){
+
+    res.status(500).json({
+        error:error.message
+    });
+}
+};

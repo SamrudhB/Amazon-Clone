@@ -1,23 +1,23 @@
 const express =
-require("express");
+    require("express");
 
 const router =
-express.Router();
+    express.Router();
 
 const auth =
-require("../middleware/auth");
+    require("../middleware/auth");
 
 const {
 
-addToCart,
-getCart,
-updateCart,
-removeFromCart,
-cartSummary
+    addToCart,
+    getCart,
+    updateCart,
+    removeFromCart,
+    cartSummary
 
 }
-=
-require("../controllers/cartController");
+    =
+    require("../controllers/cartController");
 
 router.post(
     "/add",
@@ -50,4 +50,4 @@ router.get(
 );
 
 module.exports =
-router;
+    router;

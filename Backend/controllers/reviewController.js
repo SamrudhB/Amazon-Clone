@@ -1,107 +1,107 @@
 const Review =
-require("../models/reviewSchema");
+    require("../models/reviewSchema");
 
 const Order =
-require("../models/ordersSchema");
+    require("../models/ordersSchema");
 
 const Product =
-require("../models/productsSchema");
+    require("../models/productsSchema");
 
 const User =
-require("../models/userSchema");
+    require("../models/userSchema");
 
 exports.addReview =
-async(req,res)=>{
+    async (req, res) => {
 
-try{
+        try {
 
-    const {
-        productId,
-        rating,
-        comment
-    } = req.body;
+            const {
+                productId,
+                rating,
+                comment
+            } = req.body;
 
-    const existingReview =
-await Review.findOne({
+            const existingReview =
+                await Review.findOne({
 
-    user:req.user._id,
+                    user: req.user._id,
 
-    product:productId
+                    product: productId
 
-});
+                });
 
-if(existingReview){
+            if (existingReview) {
 
-    return res.status(400)
-    .json({
+                return res.status(400)
+                    .json({
 
-        message:
-        "Review already submitted"
+                        message:
+                            "Review already submitted"
 
-    });
-}
+                    });
+            }
 
-    const review =
-    await Review.create({
+            const review =
+                await Review.create({
 
-        user:req.user._id,
+                    user: req.user._id,
 
-        product:productId,
+                    product: productId,
 
-        rating,
+                    rating,
 
-        comment
+                    comment
 
-    });
+                });
 
-    const reviews =
-    await Review.find({
-        product:productId
-    });
+            const reviews =
+                await Review.find({
+                    product: productId
+                });
 
-    const avg =
-    reviews.reduce(
-        (sum,item)=>
-        sum + item.rating,
-        0
-    ) / reviews.length;
+            const avg =
+                reviews.reduce(
+                    (sum, item) =>
+                        sum + item.rating,
+                    0
+                ) / reviews.length;
 
-    await Product.findByIdAndUpdate(
-        productId,
-        {
-            averageRating:avg,
-            totalReviews:reviews.length
+            await Product.findByIdAndUpdate(
+                productId,
+                {
+                    averageRating: avg,
+                    totalReviews: reviews.length
+                }
+            );
+
+            res.status(201).json(review);
+
+        } catch (error) {
+
+            res.status(500).json({
+                error: error.message
+            });
         }
-    );
-
-    res.status(201).json(review);
-
-}catch(error){
-
-    res.status(500).json({
-        error:error.message
-    });
-}
-};
+    };
 
 exports.getReviews =
-async(req,res)=>{
+    async (req, res) => {
 
-try{
+        try {
 
-    const reviews =
-    await Review.find({
-        product:req.params.productId
-    })
-    .populate("user","fname")
-    .populate("product");
+            const reviews =
+                await Review.find({
+                    product: req.params.productId
+                })
+                    .populate("user", "fname")
+                    .populate("product");
 
-    res.json(reviews);
+            res.json(reviews);
 
-}catch(error){
+        } catch (error) {
 
-    res.status(500).json({
-        error:error.message
-    });
-}
-};
+            res.status(500).json({
+                error: error.message
+            });
+        }
+    };

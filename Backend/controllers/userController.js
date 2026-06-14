@@ -71,25 +71,19 @@ exports.login = async (req, res) => {
       sameSite: "strict",
       secure: process.env.NODE_ENV === "production"
     });
-
-    // res.status(200).json({
-    //   success: true,
-    //   message: "Login Successful",
-    //   user
-    // });
     res.status(200).json({
-  success: true,
-  message: "Login Successful",
-  user: {
-    _id: user._id,
-    fname: user.fname,
-    email: user.email,
-    mobile: user.mobile,
-    role: user.role,
-    cart: user.cart,
-    wishlist: user.wishlist,
-  }
-});
+      success: true,
+      message: "Login Successful",
+      user: {
+        _id: user._id,
+        fname: user.fname,
+        email: user.email,
+        mobile: user.mobile,
+        role: user.role,
+        cart: user.cart,
+        wishlist: user.wishlist,
+      }
+    });
 
   } catch (err) {
     res.status(500).json({
@@ -99,40 +93,40 @@ exports.login = async (req, res) => {
 };
 
 exports.profile =
-async(req,res)=>{
+  async (req, res) => {
 
     // res.json(req.user);
-  res.json({
-    _id: req.user._id,
-    fname: req.user.fname,
-    email: req.user.email,
-    mobile: req.user.mobile,
-    role: req.user.role,
-    cart: req.user.cart,
-    wishlist: req.user.wishlist,
-  });
-};
+    res.json({
+      _id: req.user._id,
+      fname: req.user.fname,
+      email: req.user.email,
+      mobile: req.user.mobile,
+      role: req.user.role,
+      cart: req.user.cart,
+      wishlist: req.user.wishlist,
+    });
+  };
 
 exports.logout = async (req, res) => {
 
-    try {
+  try {
 
-        req.user.tokens = req.user.tokens.filter(
-            (curr) => curr.token !== req.token
-        );
+    req.user.tokens = req.user.tokens.filter(
+      (curr) => curr.token !== req.token
+    );
 
-        await req.user.save();
+    await req.user.save();
 
-        res.clearCookie("ecommerce");
+    res.clearCookie("ecommerce");
 
-        res.status(200).json({
-            message: "Logged out"
-        });
+    res.status(200).json({
+      message: "Logged out"
+    });
 
-    } catch (error) {
+  } catch (error) {
 
-        res.status(500).json({
-            error: error.message
-        });
-    }
+    res.status(500).json({
+      error: error.message
+    });
+  }
 };

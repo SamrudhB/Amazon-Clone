@@ -10,27 +10,25 @@ const port = process.env.PORT || 5000;
 require("./db/conn");
 
 const DefaultData =
-require("./defaultdata");
+    require("./defaultdata");
 
 app.use(express.json());
 
 app.use(express.urlencoded({
-    extended:true
+    extended: true
 }));
 
 app.use(cookieParser());
 
 const registerRoutes =
-require("./routes");
+    require("./routes");
 
 registerRoutes(app);
-
-app.listen(port, async ()=>{
+DefaultData();
+app.listen(port, async () => {
 
     console.log(
         `Server running on port ${port}`
     );
-
-    await DefaultData();
 
 });

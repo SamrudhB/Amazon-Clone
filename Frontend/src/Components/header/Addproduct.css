@@ -1,0 +1,108 @@
+.add-product-page {
+    background: #eaeded;
+    min-height: 100vh;
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+}
+
+.add-product-card {
+    max-width: 850px;
+    margin: auto;
+    margin-top: 50px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 40px;
+}
+
+.add-product-card h2 {
+    margin-bottom: 25px;
+    color: #111;
+}
+
+.add-product-card label {
+    display: block;
+    margin-bottom: 6px;
+    margin-top: 18px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.add-product-card input,
+.add-product-card textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px;
+    border: 1px solid #c7c7c7;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.add-product-card textarea {
+    resize: vertical;
+}
+
+.row {
+    display: flex;
+    gap: 20px;
+}
+
+.row>div {
+    flex: 1;
+}
+
+.image-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.image-row input {
+    flex: 1;
+}
+
+.add-image-btn,
+.remove-btn,
+.submit-btn {
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.add-image-btn {
+    margin-top: 15px;
+    background: #f3f3f3;
+    padding: 10px 16px;
+}
+
+.remove-btn {
+    background: #d32f2f;
+    color: #fff;
+    padding: 0 14px;
+}
+
+.submit-btn {
+    margin-top: 30px;
+    width: 100%;
+    background: #ffd814;
+    color: #111;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.submit-btn:hover {
+    background: #f7ca00;
+}
+
+@media (max-width: 768px) {
+
+    .row,
+    .image-row {
+        flex-direction: column;
+    }
+
+    .remove-btn {
+        padding: 10px;
+    }
+}

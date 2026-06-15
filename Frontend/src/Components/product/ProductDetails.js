@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import "../product/product.css";
 import ProductReviews from "./ProductReviews";
@@ -30,16 +31,41 @@ const AmazonProductPage = () => {
   };
 
   const addToCart = async () => {
-    await fetch("/api/cart/add", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ productId: id }),
-    });
+    try {
+      const res = await fetch("/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ productId: id }),
+      });
 
-    alert("Added to cart");
+      const data = await res.json();
+
+      if (!res.ok) {
+        toast.error(data.message || data.error || "Failed to add to cart", {
+          position: "top-center",
+        });
+        return;
+      }
+
+      toast.success(data.message || "Added to cart successfully", {
+        position: "top-center",
+      });
+
+    } catch (error) {
+      console.error("Add to cart error:", error);
+
+      toast.error("Something went wrong. Please try again.", {
+        position: "top-center",
+      });
+    }
   };
-  if (!product) return <h2>Loading...</h2>;
+
+  if (!product) {
+    return <h2>Loading...</h2>;
+  }
 
   const savedPercent = Math.round(product.price.discount);
   const ratingText = product.averageRating.toFixed(1);

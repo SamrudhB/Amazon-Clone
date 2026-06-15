@@ -27,7 +27,7 @@ const Option = ({ deletedata, get, quantity }) => {
             const data = await res.json();
 
             if (!res.ok) {
-                toast.error("Failed to update quantity", {
+                toast.error(data.message || data.error || "Failed to update quantity", {
                     position: "top-center",
                 });
                 return;

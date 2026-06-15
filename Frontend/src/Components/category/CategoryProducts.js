@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./CategoryProducts.css";
+import { toast } from "react-toastify";
 import { useParams, useHistory } from "react-router-dom";
 
 const CategoryProducts = () => {
@@ -39,11 +40,17 @@ const CategoryProducts = () => {
                 }),
             });
 
+            const data = await res.json();
             if (!res.ok) {
-                throw new Error("Failed to add to cart");
+                toast.error(data.message || data.error || "Failed to add to cart", {
+                    position: "top-center",
+                });
+                return;
             }
 
-            alert("Product added to cart successfully!");
+            toast.success(data.message || "Added to cart successfully", {
+                position: "top-center",
+            });
         } catch (error) {
             console.error(error);
             alert("Failed to add product to cart.");

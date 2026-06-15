@@ -1,6 +1,7 @@
 const Order = require("../models/ordersSchema");
 const User = require("../models/userSchema");
 const Product = require("../models/productsSchema");
+//should implement payment with checkout when order is pending 
 exports.createOrder = async (req, res) => {
     try {
 

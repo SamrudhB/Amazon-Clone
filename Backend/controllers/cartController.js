@@ -1,6 +1,7 @@
 const User = require("../models/userSchema");
 const Product = require("../models/productsSchema");
 
+//checks stock but need to reduce stock after user adds item to cart
 exports.addToCart = async (req, res) => {
 
     try {

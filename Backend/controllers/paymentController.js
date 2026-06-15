@@ -1,70 +1,71 @@
 const Payment =
-require("../models/paymentSchema");
+    require("../models/paymentSchema");
 
 const Order =
-require("../models/ordersSchema");
+    require("../models/ordersSchema");
 
+//payment after entering checkout page through razorpay ui and after order paid stock of the product should reduce
 exports.createPayment =
-async(req,res)=>{
+    async (req, res) => {
 
-try{
+        try {
 
-    const {
-        orderId,
-        paymentMethod
-    } = req.body;
+            const {
+                orderId,
+                paymentMethod
+            } = req.body;
 
-    const order =
-    await Order.findById(orderId);
+            const order =
+                await Order.findById(orderId);
 
-    if(!order){
+            if (!order) {
 
-        return res.status(404).json({
-            message:"Order not found"
-        });
-    }
+                return res.status(404).json({
+                    message: "Order not found"
+                });
+            }
 
-    const payment =
-    await Payment.create({
+            const payment =
+                await Payment.create({
 
-        user:req.user._id,
+                    user: req.user._id,
 
-        order:order._id,
+                    order: order._id,
 
-        amount:order.totalAmount,
+                    amount: order.totalAmount,
 
-        paymentMethod,
+                    paymentMethod,
 
-        paymentStatus:"Success"
+                    paymentStatus: "Success"
 
-    });
+                });
 
-    res.status(201).json(payment);
+            res.status(201).json(payment);
 
-}catch(error){
+        } catch (error) {
 
-    res.status(500).json({
-        error:error.message
-    });
-}
-};
+            res.status(500).json({
+                error: error.message
+            });
+        }
+    };
 
 exports.getPayments =
-async(req,res)=>{
+    async (req, res) => {
 
-try{
+        try {
 
-    const payments =
-    await Payment.find({
-        user:req.user._id
-    });
+            const payments =
+                await Payment.find({
+                    user: req.user._id
+                });
 
-    res.json(payments);
+            res.json(payments);
 
-}catch(error){
+        } catch (error) {
 
-    res.status(500).json({
-        error:error.message
-    });
-}
-};
+            res.status(500).json({
+                error: error.message
+            });
+        }
+    };

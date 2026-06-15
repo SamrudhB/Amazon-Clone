@@ -10,6 +10,7 @@ const Product =
 const User =
     require("../models/userSchema");
 
+//review should be added only after that product order is confirmed
 exports.addReview =
     async (req, res) => {
 

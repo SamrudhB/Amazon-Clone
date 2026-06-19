@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./CategoryProducts.css";
 import { toast } from "react-toastify";
 import { useParams, useHistory } from "react-router-dom";
+import { Logincontext } from "../context/Contextprovider"; // Adjust path if needed
 
 const CategoryProducts = () => {
     const { id } = useParams();
     const history = useHistory();
+
+    const { setAccount } = useContext(Logincontext);
 
     const [products, setProducts] = useState([]);
 
@@ -41,19 +44,45 @@ const CategoryProducts = () => {
             });
 
             const data = await res.json();
+
             if (!res.ok) {
-                toast.error(data.message || data.error || "Failed to add to cart", {
-                    position: "top-center",
-                });
+                toast.error(
+                    data.message || data.error || "Failed to add to cart",
+                    {
+                        position: "top-center",
+                    }
+                );
                 return;
             }
 
-            toast.success(data.message || "Added to cart successfully", {
-                position: "top-center",
+            // Refresh user profile so navbar cart count updates
+            const profileRes = await fetch("/api/users/profile", {
+                method: "GET",
+                credentials: "include",
             });
+
+            if (profileRes.ok) {
+                const updatedUser = await profileRes.json();
+
+                setAccount(updatedUser);
+                localStorage.setItem(
+                    "user",
+                    JSON.stringify(updatedUser)
+                );
+            }
+
+            toast.success(
+                data.message || "Added to cart successfully",
+                {
+                    position: "top-center",
+                }
+            );
         } catch (error) {
             console.error(error);
-            alert("Failed to add product to cart.");
+
+            toast.error("Failed to add product to cart.", {
+                position: "top-center",
+            });
         }
     };
 
@@ -84,16 +113,21 @@ const CategoryProducts = () => {
                                 className="product-image"
                             />
 
-                            <div className="product-brand">{product.brand}</div>
+                            <div className="product-brand">
+                                {product.brand}
+                            </div>
 
-                            <h3 className="product-name">{product.name}</h3>
+                            <h3 className="product-name">
+                                {product.name}
+                            </h3>
 
                             <p className="product-description">
                                 {product.description}
                             </p>
 
                             <div className="rating">
-                                ⭐ {product.averageRating} ({product.totalReviews})
+                                ⭐ {product.averageRating} (
+                                {product.totalReviews})
                             </div>
 
                             <div className="price-row">

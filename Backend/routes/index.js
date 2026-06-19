@@ -10,7 +10,7 @@ module.exports = (app) => {
 
     app.use("/api/orders", require("./order"));
 
-    app.use("/api/payments", require("./payment"));
+    app.use("/api/payment", require("./payment"));
 
     app.use("/api/reviews", require("./review"));
 };

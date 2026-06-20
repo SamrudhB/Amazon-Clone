@@ -13,6 +13,8 @@ import { Switch, Route } from "react-router-dom";
 import CategoryProducts from './Components/category/CategoryProducts';
 import Orders from './Components/buynow/Orders';
 import AddProduct from './Components/header/AddProduct';
+import Checkout from './Components/buynow/Checkout';
+import AllProducts from './Components/category/AllProducts';
 
 
 function App() {
@@ -48,6 +50,9 @@ function App() {
               <Route exact path="/buynow">
                 <Buynow />
               </Route>
+              <Route exact path="/checkout">
+                <Checkout />
+              </Route>
               <Route path="/orders">
                 <Orders />
               </Route>
@@ -58,7 +63,7 @@ function App() {
                 <CategoryProducts />
               </Route>
               <Route exact path="/all">
-                <CategoryProducts />
+                <AllProducts />
               </Route>
             </Switch>
             <Footer />

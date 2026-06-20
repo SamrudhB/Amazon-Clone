@@ -36,48 +36,81 @@ exports.fetchCategory = async (req, res) => {
     }
 };
 
-exports.getProducts =
-    async (req, res) => {
+exports.getProducts = async (req, res) => {
+    try {
+        const page = Number(req.query.page);
+        const limit = Number(req.query.limit);
 
-        try {
+        const query = {};
 
-            const page =
-                Number(req.query.page) || 1;
-
-            const limit =
-                Number(req.query.limit) || 10;
-
-            const skip =
-                (page - 1) * limit;
-
-            let query = {};
-
-            if (req.query.category) {
-
-                query.category =
-                    req.query.category;
-            }
-
-            if (req.query.brand) {
-
-                query.brand =
-                    req.query.brand;
-            }
-
-            const products =
-                await Product.find(query)
-                    .skip(skip)
-                    .limit(limit);
-
-            res.json(products);
-
-        } catch (error) {
-
-            res.status(500).json({
-                error: error.message
-            });
+        // Category filter
+        if (req.query.category) {
+            query.category = req.query.category;
         }
-    };
+
+        // Multiple brands filter
+        if (req.query.brands) {
+            query.brand = {
+                $in: req.query.brands.split(","),
+            };
+        }
+
+        // If page or limit is not provided, return all products
+        if (!page || !limit) {
+            const products = await Product.find(query);
+
+            return res.status(200).json(products);
+        }
+
+        const skip = (page - 1) * limit;
+
+        const totalProducts = await Product.countDocuments(query);
+
+        const products = await Product.find(query)
+            .skip(skip)
+            .limit(limit);
+
+        res.status(200).json({
+            products,
+            currentPage: page,
+            totalPages: Math.ceil(totalProducts / limit),
+            totalProducts,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            error: error.message,
+        });
+    }
+};
+
+exports.getBrandsByCategory = async (req, res) => {
+
+    try {
+
+        const category = req.query.category;
+
+        const brands =
+            await Product.distinct(
+                "brand",
+                {
+                    category,
+                }
+            );
+
+        res.status(200).json({
+            brands,
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            error: error.message,
+        });
+
+    }
+
+};
 
 exports.getProduct =
     async (req, res) => {

@@ -18,7 +18,8 @@ const {
     updateProduct,
     deleteProduct,
     searchProducts,
-    fetchCategory
+    fetchCategory,
+    getBrandsByCategory
 
 }
     =
@@ -40,6 +41,8 @@ router.get(
     "/categories",
     fetchCategory,
 );
+
+router.get("/brands", getBrandsByCategory);
 
 router.get(
     "/:id",

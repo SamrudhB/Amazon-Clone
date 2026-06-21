@@ -109,7 +109,6 @@ exports.getBrandsByCategory = async (req, res) => {
         });
 
     }
-
 };
 
 exports.getProduct =

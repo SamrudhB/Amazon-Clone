@@ -14,9 +14,16 @@
     background: #fff;
     border: 1px solid #e7e7e7;
     border-radius: 8px;
+    border-right: 1px solid #373333;
     margin: 10px;
     padding: 50px;
     height: fit-content;
+}
+
+.brand-divider {
+    border: none;
+    border-top: 1px solid #4a4545;
+    margin: 10px 0 18px;
 }
 
 .filter-sidebar h2 {

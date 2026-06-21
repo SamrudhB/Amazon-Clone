@@ -132,6 +132,7 @@ const CategoryProducts = () => {
             {/* Left Sidebar */}
             <div className="filter-sidebar">
                 <h2>Brands</h2>
+                <hr className="brand-divider" />
 
                 {brands.map((brand) => (
                     <label

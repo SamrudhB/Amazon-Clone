@@ -1,0 +1,72 @@
+.checkout-page {
+    background: #f3f3f3;
+    margin: 30px auto;
+    min-height: 100vh;
+    padding: 40px;
+}
+
+.checkout-container {
+    display: flex;
+    gap: 25px;
+}
+
+.left-section {
+    flex: 2;
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+}
+
+.right-section {
+    flex: 1;
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    height: fit-content;
+}
+
+.left-section input,
+.left-section textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.left-section textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.order-summary-title {
+    padding-bottom: 20px;
+}
+
+.summary-card {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.summary-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.right-section button {
+    width: 100%;
+    background: #ffd814;
+    border: none;
+    padding: 12px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 20px;
+}
+
+.right-section button:hover {
+    background: #f7ca00;
+}

@@ -5,59 +5,68 @@ import Avatar from "@mui/material/Avatar";
 import Badge from "@mui/material/Badge";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import { NavLink } from "react-router-dom";
-import { Logincontext } from "../context/Contextprovider";
-import { ToastContainer, toast } from "react-toastify";
-import LogoutIcon from "@mui/icons-material/Logout";
-import "react-toastify/dist/ReactToastify.css";
-import { useHistory } from "react-router-dom";
+import {
+    Drawer,
+    IconButton,
+    List,
+    ListItem,
+} from "@mui/material";
 
-import { makeStyles } from "@material-ui/core";
-import { Drawer, IconButton, List, ListItem } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import LogoutIcon from "@mui/icons-material/Logout";
+
+import { NavLink, useHistory } from "react-router-dom";
+import { makeStyles } from "@material-ui/core";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { Logincontext } from "../context/Contextprovider";
 import Rightheader from "./Rightheader";
 
 import { getProducts } from "../redux/actions/action";
 import { useSelector, useDispatch } from "react-redux";
 
-const usestyle = makeStyles({
+const useStyle = makeStyles({
     component: {
         marginTop: 10,
         marginRight: "-50px",
         width: "300px",
-        padding: 50,
-        height: "300px",
+        padding: 30,
     },
 });
 
 const Navbaar = () => {
-    const classes = usestyle();
+    const classes = useStyle();
     const history = useHistory();
+    const dispatch = useDispatch();
 
     const [text, setText] = useState("");
     const [liopen, setLiopen] = useState(true);
-
     const [dropen, setDropen] = useState(false);
-
-    // FIX: Menu anchor state
     const [anchorEl, setAnchorEl] = useState(null);
 
-    const { products } = useSelector((state) => state.getproductsdata);
-    const dispatch = useDispatch();
+    const { account, setAccount } = useContext(Logincontext);
+
+    const { products } = useSelector(
+        (state) => state.getproductsdata
+    );
+
+    const isAdmin = account?.role === "admin";
 
     useEffect(() => {
         dispatch(getProducts());
     }, [dispatch]);
 
-    const { account, setAccount } = useContext(Logincontext);
+    useEffect(() => {
+        getdetailsvaliduser();
+    }, []);
 
-    // ---------------- SEARCH ----------------
-    const getText = (text) => {
-        setText(text);
+    const getText = (value) => {
+        setText(value);
         setLiopen(false);
     };
 
-    // ---------------- USER PROFILE ----------------
     const getdetailsvaliduser = async () => {
         try {
             const res = await fetch("/api/users/profile", {
@@ -76,26 +85,23 @@ const Navbaar = () => {
 
             const data = await res.json();
 
-            if (!data) {
-                setAccount(null);
-                return;
-            }
-
             setAccount(data);
 
-            localStorage.setItem("user", JSON.stringify(data));
-            localStorage.setItem("role", data.role);
+            localStorage.setItem(
+                "user",
+                JSON.stringify(data)
+            );
+
+            localStorage.setItem(
+                "role",
+                data.role
+            );
         } catch (err) {
             console.log(err);
             setAccount(null);
         }
     };
 
-    useEffect(() => {
-        getdetailsvaliduser();
-    }, []);
-
-    // ---------------- LOGOUT ----------------
     const logoutuser = async () => {
         try {
             const res = await fetch("/api/users/logout", {
@@ -119,133 +125,207 @@ const Navbaar = () => {
         }
     };
 
-    // ---------------- DRAWER ----------------
-    const handelopen = () => setDropen(true);
-    const handleClosedr = () => setDropen(false);
-
-    // ---------------- MENU ----------------
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-
     return (
         <header>
             <nav>
-                {/* LEFT SIDE */}
+                {/* LEFT */}
                 <div className="left">
-                    <IconButton className="hamburgur" onClick={handelopen}>
+                    <IconButton
+                        className="hamburgur"
+                        onClick={() => setDropen(true)}
+                    >
                         <MenuIcon style={{ color: "#fff" }} />
                     </IconButton>
 
-                    <Drawer open={dropen} onClose={handleClosedr}>
-                        <Rightheader userlog={logoutuser} logclose={handleClosedr} />
+                    <Drawer
+                        open={dropen}
+                        onClose={() => setDropen(false)}
+                    >
+                        <Rightheader
+                            userlog={logoutuser}
+                            logclose={() => setDropen(false)}
+                        />
                     </Drawer>
 
                     <div className="navlogo">
                         <NavLink to="/">
-                            <img src="/amazon_PNG25.png" alt="logo" />
+                            <img
+                                src="/amazon_PNG25.png"
+                                alt="Amazon"
+                            />
                         </NavLink>
                     </div>
 
-                    {/* SEARCH BAR */}
-                    <div className="nav_searchbaar">
-                        <input
-                            type="text"
-                            onChange={(e) => getText(e.target.value)}
-                            placeholder="Search Your Products"
-                        />
+                    {/* SEARCH ONLY FOR CUSTOMER */}
+                    {!isAdmin && (
+                        <div className="nav_searchbaar">
+                            <input
+                                type="text"
+                                placeholder="Search Products"
+                                onChange={(e) =>
+                                    getText(e.target.value)
+                                }
+                            />
 
-                        <div className="search_icon">
-                            <i className="fas fa-search" id="search"></i>
-                        </div>
+                            <div className="search_icon">
+                                <i
+                                    className="fas fa-search"
+                                    id="search"
+                                ></i>
+                            </div>
 
-                        {text && (
-                            <List className="extrasearch" hidden={liopen}>
-                                {products
-                                    .filter((product) =>
-                                        product.name.toLowerCase().includes(text.toLowerCase())
-                                    )
-                                    .map((product) => (
-                                        <ListItem key={product._id}>
-                                            <NavLink
-                                                to={`/products/${product._id}`}
-                                                onClick={() => setLiopen(true)}
+                            {text && (
+                                <List
+                                    className="extrasearch"
+                                    hidden={liopen}
+                                >
+                                    {products
+                                        ?.filter((item) =>
+                                            item.name
+                                                .toLowerCase()
+                                                .includes(
+                                                    text.toLowerCase()
+                                                )
+                                        )
+                                        .map((product) => (
+                                            <ListItem
+                                                key={product._id}
                                             >
-                                                {product.name}
-                                            </NavLink>
-                                        </ListItem>
-                                    ))}
-                            </List>
-                        )}
-                    </div>
+                                                <NavLink
+                                                    to={`/products/${product._id} `}
+                                                    onClick={() =>
+                                                        setLiopen(true)
+                                                    }
+                                                >
+                                                    {product.name}
+                                                </NavLink>
+                                            </ListItem>
+                                        ))}
+                                </List>
+                            )}
+                        </div>
+                    )}
                 </div>
 
-                {/* RIGHT SIDE */}
+                {/* RIGHT */}
                 <div className="right">
-                    {account ? (
-                        <div className="nav_btn">
-                            <NavLink to="/orders">Returns & orders</NavLink>
-                        </div>
-                    ) : (
-                        <div className="nav_btn">
-                            <NavLink to="/login">Sign in</NavLink>
-                        </div>
-                    )}
+                    {!isAdmin && (
+                        <>
+                            {!account ? (
+                                <div className="nav_btn">
+                                    <NavLink to="/login">
+                                        Sign In
+                                    </NavLink>
+                                </div>
+                            ) : (
+                                <div className="nav_btn">
+                                    <NavLink to="/orders">
+                                        Returns & Orders
+                                    </NavLink>
+                                </div>
+                            )}
 
-                    {account?.role === "admin" && (
-                        <div className="nav_btn">
-                            <NavLink to="/admin">Admin Dashboard</NavLink>
-                        </div>
-                    )}
-
-                    {/* CART */}
-                    <NavLink to={account ? "/buynow" : "/login"}>
-                        <div className="cart_btn">
-                            <Badge
-                                badgeContent={account?.cart?.length || 0}
-                                color="secondary"
+                            <NavLink
+                                to={
+                                    account
+                                        ? "/buynow"
+                                        : "/login"
+                                }
                             >
-                                <i className="fas fa-shopping-cart" id="icon"></i>
-                            </Badge>
-                            <p>Cart</p>
-                        </div>
-                    </NavLink>
+                                <div className="cart_btn">
+                                    <Badge
+                                        badgeContent={
+                                            account?.cart?.length || 0
+                                        }
+                                        color="secondary"
+                                    >
+                                        <i
+                                            className="fas fa-shopping-cart"
+                                            id="icon"
+                                        ></i>
+                                    </Badge>
 
-                    {/* AVATAR */}
+                                    <p>Cart</p>
+                                </div>
+                            </NavLink>
+                        </>
+                    )}
+
+                    {account && isAdmin && (
+                        <>
+                            <div className="nav_btn">
+                                <NavLink to="/admin">
+                                    Admin Dashboard
+                                </NavLink>
+                            </div>
+
+                            <div className="nav_btn">
+                                <NavLink to="/orders">
+                                    Returns & Orders
+                                </NavLink>
+                            </div>
+
+                            <div className="nav_btn">
+                                <NavLink to="/admin/payments">
+                                    Payments
+                                </NavLink>
+                            </div>
+                        </>
+                    )}
+
                     {account ? (
                         <Avatar
                             className="avtar2"
-                            onClick={handleClick}
-                            title={account?.fname?.toUpperCase()}
+                            onClick={(e) =>
+                                setAnchorEl(
+                                    e.currentTarget
+                                )
+                            }
+                            title={account.fname}
                         >
-                            {account?.fname?.charAt(0)?.toUpperCase()}
+                            {account.fname?.[0]?.toUpperCase()}
                         </Avatar>
                     ) : (
-                        <Avatar className="avtar" onClick={handleClick} />
+                        <Avatar
+                            className="avtar"
+                            onClick={(e) =>
+                                setAnchorEl(
+                                    e.currentTarget
+                                )
+                            }
+                        />
                     )}
 
-                    {/* MENU */}
                     <Menu
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
-                        onClose={handleClose}
+                        onClose={() =>
+                            setAnchorEl(null)
+                        }
                         className={classes.component}
                     >
-                        <MenuItem onClick={handleClose}>My account</MenuItem>
+                        {account && (
+                            <MenuItem
+                                onClick={() =>
+                                    setAnchorEl(null)
+                                }
+                            >
+                                {account.email}
+                            </MenuItem>
+                        )}
 
                         {account && (
                             <MenuItem
                                 onClick={() => {
-                                    handleClose();
+                                    setAnchorEl(null);
                                     logoutuser();
                                 }}
                             >
                                 <LogoutIcon
-                                    style={{ fontSize: 16, marginRight: 3 }}
+                                    style={{
+                                        fontSize: 18,
+                                        marginRight: 6,
+                                    }}
                                 />
                                 Logout
                             </MenuItem>

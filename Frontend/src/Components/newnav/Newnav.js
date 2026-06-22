@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "./newnav.css";
 import { NavLink } from "react-router-dom";
+import { Logincontext } from "../context/Contextprovider";
 
 const Newnav = () => {
     const [category, setCategory] = useState([]);
+    const { account } = useContext(Logincontext);
 
     useEffect(() => {
         fetchCategories();
@@ -14,6 +16,11 @@ const Newnav = () => {
         const data = await res.json();
         setCategory(data.categories || []);
     };
+
+    // Hide for admin
+    if (account?.role === "admin") {
+        return null;
+    }
 
     const sortedCategories = [...category].sort();
 

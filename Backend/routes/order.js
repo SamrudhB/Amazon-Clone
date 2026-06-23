@@ -3,17 +3,20 @@ const express = require("express");
 const router = express.Router();
 
 const auth =
-require("../middleware/auth");
+    require("../middleware/auth");
+
+const adminAuth =
+    require("../middleware/adminAuth");
 
 const {
 
-createOrder,
-getMyOrders,
-cancelOrder
-
+    createOrder,
+    getMyOrders,
+    cancelOrder,
+    getAllOrders
 }
-=
-require("../controllers/orderController");
+    =
+    require("../controllers/orderController");
 
 router.post(
     "/",
@@ -25,6 +28,13 @@ router.get(
     "/",
     auth,
     getMyOrders
+);
+
+router.get(
+    "/admin",
+    auth,
+    adminAuth,
+    getAllOrders
 );
 
 router.patch(

@@ -10,13 +10,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 const Rightheader = ({ userlog, logclose }) => {
 
     const imgd = "/india.png"
-
-    // const { account, setAccount } = useContext(Logincontext);
     const { account } = useContext(Logincontext);
-
-
-    //  this is left drawer bt name is right header
-
     return (
         <div className="rightheader">
             <div className="right_nav">
@@ -35,7 +29,7 @@ const Rightheader = ({ userlog, logclose }) => {
                 <Divider style={{ width: "100%", marginLeft: -20 }} />
                 <NavLink to="/" style={{ marginTop: 10 }}>Today's Deal</NavLink>
                 {
-                    account ? <NavLink to="/buynow">Your Order</NavLink> : <NavLink to="/login">Your Order</NavLink>
+                    account ? <NavLink to="/orders">Your Order</NavLink> : <NavLink to="/login">Your Order</NavLink>
                 }
                 <Divider style={{ width: "100%", marginLeft: -20 }} />
                 <div className="flag">

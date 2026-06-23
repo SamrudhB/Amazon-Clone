@@ -1,29 +1,28 @@
 const express = require("express");
-
 const router = express.Router();
 
-const auth =
-require("../middleware/auth");
-
-const {
-
-createPayment,
-getPayments
-
-}
-=
-require("../controllers/paymentController");
+const auth = require("../middleware/auth");
+const adminAuth =
+    require("../middleware/adminAuth");
+const paymentController = require("../controllers/paymentController");
 
 router.post(
-    "/",
+    "/create-order",
     auth,
-    createPayment
+    paymentController.createRazorpayOrder
+);
+
+router.post(
+    "/verify",
+    auth,
+    paymentController.verifyPayment
 );
 
 router.get(
-    "/",
+    "/admin",
     auth,
-    getPayments
+    adminAuth,
+    paymentController.getAllPayments
 );
 
 module.exports = router;

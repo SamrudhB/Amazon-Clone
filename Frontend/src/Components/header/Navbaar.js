@@ -45,6 +45,7 @@ const Navbaar = () => {
     const [liopen, setLiopen] = useState(true);
     const [dropen, setDropen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [deliveryAddress, setDeliveryAddress] = useState(null);
 
     const { account, setAccount } = useContext(Logincontext);
 
@@ -60,11 +61,47 @@ const Navbaar = () => {
 
     useEffect(() => {
         getdetailsvaliduser();
+        getDeliveryAddress();
     }, []);
 
     const getText = (value) => {
         setText(value);
         setLiopen(false);
+    };
+
+    const getDeliveryAddress = async () => {
+        try {
+            const res = await fetch("/api/orders", {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (!res.ok) return;
+
+            const data = await res.json();
+
+            const orders = Array.isArray(data)
+                ? data
+                : data.orders || [];
+
+            if (!orders.length) {
+                setDeliveryAddress(null);
+                return;
+            }
+
+            // latest order
+            const latestOrder = orders.sort(
+                (a, b) =>
+                    new Date(b.createdAt) -
+                    new Date(a.createdAt)
+            )[0];
+
+            setDeliveryAddress(
+                latestOrder.shippingAddress || null
+            );
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const getdetailsvaliduser = async () => {
@@ -209,34 +246,111 @@ const Navbaar = () => {
 
                 {/* RIGHT */}
                 <div className="right">
-                    {!isAdmin && (
-                        <>
-                            {!account ? (
-                                <div className="nav_btn">
-                                    <NavLink to="/login">
-                                        Sign In
-                                    </NavLink>
-                                </div>
-                            ) : (
-                                <div className="nav_btn">
-                                    <NavLink to="/orders">
-                                        Returns & Orders
-                                    </NavLink>
-                                </div>
-                            )}
 
-                            <NavLink
-                                to={
-                                    account
-                                        ? "/buynow"
-                                        : "/login"
-                                }
+                    {/* Customer (Not Logged In) */}
+                    {!account && (
+                        <>
+                            {/* Hello Sign In */}
+                            <div className="nav_text">
+                                <NavLink to="/login">
+                                    <div className="user_text">
+                                        <span>Hello User,</span>
+                                        <h4>Sign In
+                                            <i
+                                                className="fas fa-caret-down"
+                                                style={{
+                                                    marginLeft: "4px",
+                                                    fontSize: "12px",
+                                                }}
+                                            />
+                                        </h4>
+                                    </div>
+                                </NavLink>
+                            </div>
+
+                            {/* Cart */}
+                            <NavLink to="/login">
+                                <div className="cart_btn">
+                                    <Badge badgeContent={0} color="secondary">
+                                        <i
+                                            className="fas fa-shopping-cart"
+                                            id="icon"
+                                        ></i>
+                                    </Badge>
+                                    <p>Cart</p>
+                                </div>
+                            </NavLink>
+                        </>
+                    )}
+
+                    {/* Logged In Customer */}
+                    {account && !isAdmin && (
+                        <>
+                            {/* Deliver To */}
+                            <div className="nav_text">
+                                <i
+                                    className="fas fa-map-marker-alt"
+                                    style={{
+                                        marginRight: "5px",
+                                    }}
+                                />
+
+                                <div>
+                                    <div
+                                        style={{
+                                            fontSize: "11px",
+                                            color: "#ddd",
+                                        }}
+                                    >
+                                        Deliver to
+                                    </div>
+
+                                    <div
+                                        style={{
+                                            fontWeight: "bold",
+                                            color: "#fff",
+                                        }}
+                                    >
+                                        {deliveryAddress
+                                            ? `${deliveryAddress.city}, ${deliveryAddress.pincode}`
+                                            : "Select Address"}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Hello User */}
+                            <div
+                                className="nav_text"
+                                onClick={(e) => setAnchorEl(e.currentTarget)}
+                                style={{ cursor: "pointer" }}
                             >
+                                <div className="user_text">
+                                    <span>Hello, {account.fname}</span>
+                                    <h4>Account &amp; Lists
+                                        <i
+                                            className="fas fa-caret-down"
+                                            style={{
+                                                marginLeft: "4px",
+                                                fontSize: "12px",
+                                            }}
+                                        />
+                                    </h4>
+                                </div>
+                            </div>
+
+                            {/* Orders */}
+                            <div className="nav_text">
+                                <NavLink to="/orders">
+                                    <span>Returns</span>
+                                    <h4>&amp; Orders</h4>
+                                </NavLink>
+                            </div>
+
+                            {/* Cart */}
+                            <NavLink to={account ? "/buynow" : "/login"}>
                                 <div className="cart_btn">
                                     <Badge
-                                        badgeContent={
-                                            account?.cart?.length || 0
-                                        }
+                                        badgeContent={account?.cart?.length || 0}
                                         color="secondary"
                                     >
                                         <i
@@ -251,65 +365,60 @@ const Navbaar = () => {
                         </>
                     )}
 
+                    {/* Logged In Admin */}
                     {account && isAdmin && (
                         <>
-                            <div className="nav_btn">
+                            {/* Hello Admin */}
+                            <div
+                                className="nav_text nav_clickable"
+                                onClick={(e) => setAnchorEl(e.currentTarget)}
+                            >
+                                <span>Hello, {account.fname}</span>
+                                <h4>Account &amp; Lists
+                                    <i
+                                        className="fas fa-caret-down"
+                                        style={{
+                                            marginLeft: "4px",
+                                            fontSize: "12px",
+                                        }}
+                                    />
+                                </h4>
+                            </div>
+
+                            {/* Admin Dashboard */}
+                            <div className="nav_text">
                                 <NavLink to="/admin">
-                                    Admin Dashboard
+                                    <span>Admin</span>
+                                    <h4>Dashboard</h4>
                                 </NavLink>
                             </div>
 
-                            <div className="nav_btn">
+                            {/* Returns & Orders */}
+                            <div className="nav_text">
                                 <NavLink to="/orders">
-                                    Returns & Orders
+                                    <span>Customer</span>
+                                    <h4>Orders</h4>
                                 </NavLink>
                             </div>
 
-                            <div className="nav_btn">
+                            {/* Payments */}
+                            <div className="nav_text">
                                 <NavLink to="/admin/payments">
-                                    Payments
+                                    <span>Bills</span>
+                                    <h4>&amp;Payments</h4>
                                 </NavLink>
                             </div>
                         </>
                     )}
 
-                    {account ? (
-                        <Avatar
-                            className="avtar2"
-                            onClick={(e) =>
-                                setAnchorEl(
-                                    e.currentTarget
-                                )
-                            }
-                            title={account.fname}
-                        >
-                            {account.fname?.[0]?.toUpperCase()}
-                        </Avatar>
-                    ) : (
-                        <Avatar
-                            className="avtar"
-                            onClick={(e) =>
-                                setAnchorEl(
-                                    e.currentTarget
-                                )
-                            }
-                        />
-                    )}
-
                     <Menu
                         anchorEl={anchorEl}
                         open={Boolean(anchorEl)}
-                        onClose={() =>
-                            setAnchorEl(null)
-                        }
+                        onClose={() => setAnchorEl(null)}
                         className={classes.component}
                     >
                         {account && (
-                            <MenuItem
-                                onClick={() =>
-                                    setAnchorEl(null)
-                                }
-                            >
+                            <MenuItem onClick={() => setAnchorEl(null)}>
                                 {account.email}
                             </MenuItem>
                         )}

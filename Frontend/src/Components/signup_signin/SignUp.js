@@ -4,8 +4,10 @@ import { NavLink } from 'react-router-dom';
 import "./signup.css";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useHistory } from "react-router-dom";
 
 const Signup = () => {
+    const history = useHistory();
 
     const [udata, setUdata] = useState({
         fname: "",
@@ -82,6 +84,9 @@ const Signup = () => {
             });
 
             toast.success("Registration successful!");
+            setTimeout(() => {
+                history.push("/login");
+            }, 1500);
         } catch (err) {
             console.log(err);
             toast.error("Server error");

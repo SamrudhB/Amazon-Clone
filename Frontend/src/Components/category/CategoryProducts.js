@@ -91,6 +91,7 @@ const CategoryProducts = () => {
                     data.error ||
                     "Failed to add to cart"
                 );
+                history.push("/login");
                 return;
             }
 

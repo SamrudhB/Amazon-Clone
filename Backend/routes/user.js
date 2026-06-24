@@ -1,45 +1,30 @@
-const express =
-require("express");
+const express = require("express");
 
-const router =
-express.Router();
+const router = express.Router();
 
-const auth =
-require("../middleware/auth");
-const User = require("../models/userSchema");
+const auth = require("../middleware/auth");
 
 const {
-
     register,
     login,
+    sendLoginOtp,
+    verifyLoginOtp,
     profile,
-    logout
+    logout,
+} = require("../controllers/userController");
 
-}
-=
-require("../controllers/userController");
+router.post("/register", register);
 
-router.post(
-    "/register",
-    register
-);
+// Admin Login (Email + Password)
+router.post("/login", login);
 
-router.post(
-    "/login",
-    login
-);
+// Customer Login - Send OTP
+router.post("/send-login-otp", sendLoginOtp);
 
-router.get(
-    "/profile",
-    auth,
-    profile
-);
+router.post("/verify-login-otp", verifyLoginOtp);
 
-router.post(
-    "/logout",
-    auth,
-    logout
-);
+router.get("/profile", auth, profile);
 
-module.exports =
-router;
+router.post("/logout", auth, logout);
+
+module.exports = router;

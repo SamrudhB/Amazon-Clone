@@ -5,12 +5,14 @@ import React, {
 } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useHistory } from "react-router-dom";
 
 import "../product/product.css";
 import ProductReviews from "./ProductReviews";
 import { Logincontext } from "../context/Contextprovider";
 
 const AmazonProductPage = () => {
+  const history = useHistory();
   const { id } = useParams();
 
   const { setAccount } = useContext(Logincontext);
@@ -65,6 +67,7 @@ const AmazonProductPage = () => {
             position: "top-center",
           }
         );
+        history.push("/login");
         return;
       }
 

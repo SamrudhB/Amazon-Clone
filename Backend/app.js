@@ -9,26 +9,23 @@ const port = process.env.PORT || 5000;
 
 require("./db/conn");
 
-const DefaultData =
-    require("./defaultdata");
+const DefaultData = require("./defaultdata");
 
 app.use(express.json());
 
-app.use(express.urlencoded({
-    extended: true
-}));
+app.use(
+    express.urlencoded({
+        extended: true,
+    })
+);
 
 app.use(cookieParser());
 
-const registerRoutes =
-    require("./routes");
-
+const registerRoutes = require("./routes");
 registerRoutes(app);
+
 DefaultData();
-app.listen(port, async () => {
 
-    console.log(
-        `Server running on port ${port}`
-    );
-
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
 });

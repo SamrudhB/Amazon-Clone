@@ -20,6 +20,14 @@ const AmazonProductPage = () => {
   const [product, setProduct] = useState(null);
   const [reviews, setReviews] = useState([]);
 
+  const [showMagnifier, setShowMagnifier] = useState(false);
+  const [[cursorX, cursorY], setCursorXY] = useState([0, 0]);
+  const [[lensX, lensY], setLensXY] = useState([0, 0]);
+  const [[imgWidth, imgHeight], setImgSize] = useState([0, 0]);
+
+  const ZOOM_LEVEL = 2.5;
+  const LENS_SIZE = 150;
+
   useEffect(() => {
     fetchProduct();
     fetchReviews();
@@ -71,7 +79,6 @@ const AmazonProductPage = () => {
         return;
       }
 
-      // Refresh logged-in user so navbar cart badge updates instantly
       const profileRes = await fetch("/api/users/profile", {
         method: "GET",
         credentials: "include",
@@ -99,6 +106,30 @@ const AmazonProductPage = () => {
     }
   };
 
+  const handleMouseEnter = (e) => {
+    const { width, height } = e.currentTarget.getBoundingClientRect();
+    setImgSize([width, height]);
+    setShowMagnifier(true);
+  };
+
+  const handleMouseMove = (e) => {
+    const { top, left, width, height } = e.currentTarget.getBoundingClientRect();
+
+    let x = e.pageX - left - window.pageXOffset;
+    let y = e.pageY - top - window.pageYOffset;
+
+    let cleanLensX = x - LENS_SIZE / 2;
+    let cleanLensY = y - LENS_SIZE / 2;
+
+    if (cleanLensX < 0) cleanLensX = 0;
+    if (cleanLensX > width - LENS_SIZE) cleanLensX = width - LENS_SIZE;
+    if (cleanLensY < 0) cleanLensY = 0;
+    if (cleanLensY > height - LENS_SIZE) cleanLensY = height - LENS_SIZE;
+
+    setCursorXY([x, y]);
+    setLensXY([cleanLensX, cleanLensY]);
+  };
+
   if (!product) {
     return <h2>Loading...</h2>;
   }
@@ -116,17 +147,63 @@ const AmazonProductPage = () => {
     <>
       <div className="amazon-page">
         <main className="amazon-main">
-          <div className="product-gallery">
-            <div className="image-card">
+          {/* PRODUCT GALLERY */}
+          <div className="product-gallery" style={{ position: "relative" }}>
+            <div
+              className="image-card"
+              style={{ position: "relative", overflow: "hidden", cursor: "crosshair" }}
+              onMouseEnter={handleMouseEnter}
+              onMouseMove={handleMouseMove}
+              onMouseLeave={() => setShowMagnifier(false)}
+            >
               <img
                 src={product.images[0]}
                 alt={product.name}
+                style={{ width: "100%", display: "block" }}
               />
+
+              {/* Shaded Lens Box Overlay tracking cursor */}
+              {showMagnifier && (
+                <div
+                  style={{
+                    position: "absolute",
+                    pointerEvents: "none",
+                    height: `${LENS_SIZE}px`,
+                    width: `${LENS_SIZE}px`,
+                    backgroundColor: "rgba(247, 161, 32, 0.23)",
+                    border: "1px solid #f7a120",
+                    top: `${lensY}px`,
+                    left: `${lensX}px`,
+                  }}
+                />
+              )}
             </div>
 
             <p className="image-note">
-              Click image to see full view
+              Hover image to zoom / Click for full view
             </p>
+
+            {showMagnifier && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "0",
+                  left: "105%",
+                  width: `${imgWidth}px`,
+                  height: `${imgHeight}px`,
+                  zIndex: 99,
+                  border: "1px solid #d4d4d4",
+                  boxShadow: "0px 4px 10px rgba(0,0,0,0.15)",
+                  backgroundColor: "#fff",
+                  backgroundImage: `url('${product.images[0]}')`,
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: `${imgWidth * ZOOM_LEVEL}px ${imgHeight * ZOOM_LEVEL}px`,
+                  // Translates lens coordinates inversely into high-res scaling placement
+                  backgroundPositionX: `${-lensX * ZOOM_LEVEL}px`,
+                  backgroundPositionY: `${-lensY * ZOOM_LEVEL}px`
+                }}
+              />
+            )}
           </div>
 
           <div className="product-info">

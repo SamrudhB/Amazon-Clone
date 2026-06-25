@@ -112,12 +112,24 @@ exports.getMyOrders = async (req, res) => {
 /**
  * Get single order details
  */
+
 exports.getOrderById = async (req, res) => {
     try {
-        const order = await Order.findOne({
+
+        let query = {
             _id: req.params.id,
-            user: req.user._id,
-        })
+        };
+
+        // Customer can only see their own order
+        if (req.user.role !== "admin") {
+            query.user = req.user._id;
+        }
+
+        const order = await Order.findOne(query)
+            .populate(
+                "user",
+                "fname lname email"
+            )
             .populate({
                 path: "products.product",
             })
@@ -129,12 +141,80 @@ exports.getOrderById = async (req, res) => {
             });
         }
 
-        return res.json(order);
-    } catch (error) {
-        return res.status(500).json({
-            error: error.message,
+        res.json(order);
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message,
         });
     }
+};
+
+/**
+ * update order status
+ */
+//new
+exports.updateOrderStatus = async (
+    req,
+    res
+) => {
+
+    try {
+
+        const {
+            orderStatus,
+        } = req.body;
+
+        const allowedStatuses = [
+            "Confirmed",
+            "Packed",
+            "Shipped",
+            "Out For Delivery",
+            "Delivered",
+            "Cancelled",
+        ];
+
+        if (
+            !allowedStatuses.includes(
+                orderStatus
+            )
+        ) {
+            return res.status(400).json({
+                message:
+                    "Invalid order status",
+            });
+        }
+
+        const order =
+            await Order.findById(
+                req.params.id
+            );
+
+        if (!order) {
+            return res.status(404).json({
+                message:
+                    "Order not found",
+            });
+        }
+
+        order.orderStatus =
+            orderStatus;
+
+        await order.save();
+
+        res.json({
+            success: true,
+            order,
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            error: err.message,
+        });
+
+    }
+
 };
 
 /**
@@ -159,12 +239,12 @@ exports.cancelOrder = async (req, res) => {
             });
         }
 
-        if (order.orderStatus === "Delivered") {
-            return res.status(400).json({
-                message:
-                    "Delivered orders cannot be cancelled",
-            });
-        }
+        // if (order.orderStatus === "Delivered") {
+        //     return res.status(400).json({
+        //         message:
+        //             "Delivered orders cannot be cancelled",
+        //     });
+        // }
 
         /*
             Restore stock only if payment succeeded.

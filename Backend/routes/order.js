@@ -12,11 +12,12 @@ const {
 
     createOrder,
     getMyOrders,
+    getOrderById,
     cancelOrder,
-    getAllOrders
-}
-    =
-    require("../controllers/orderController");
+    getAllOrders,
+    updateOrderStatus,
+
+} = require("../controllers/orderController");
 
 router.post(
     "/",
@@ -30,6 +31,14 @@ router.get(
     getMyOrders
 );
 
+// Single order details
+router.get(
+    "/:id",
+    auth,
+    getOrderById
+);
+
+// Admin: all orders
 router.get(
     "/admin",
     auth,
@@ -37,10 +46,20 @@ router.get(
     getAllOrders
 );
 
+// Customer cancel
 router.patch(
     "/cancel/:id",
     auth,
     cancelOrder
 );
 
+// Admin status update
+router.patch(
+    "/status/:id",
+    auth,
+    adminAuth,
+    updateOrderStatus
+);
+
 module.exports = router;
+

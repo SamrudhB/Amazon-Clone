@@ -10,7 +10,7 @@ exports.addReview = async (req, res) => {
         // Check whether the user has purchased this product
         const purchasedOrder = await Order.findOne({
             user: req.user._id,
-            orderStatus: "Confirmed", // You can change this to "Delivered"
+            orderStatus: "Delivered", // You can change this to "Delivered"
             products: {
                 $elemMatch: {
                     product: productId,

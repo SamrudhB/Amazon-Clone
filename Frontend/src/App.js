@@ -22,6 +22,7 @@ import AllProducts from "./Components/category/AllProducts";
 import Buynow from "./Components/buynow/Buynow";
 import Checkout from "./Components/buynow/Checkout";
 import Orders from "./Components/buynow/Orders";
+import OrderDetails from "./Components/buynow/OrderDetails";
 
 import AddProduct from "./Components/header/AddProduct";
 import AdminPayments from "./Components/buynow/AdminPayments";
@@ -39,7 +40,7 @@ function App() {
 
   if (!data) {
     return (
-      <div className="circle">
+      <div className="circle1">
         <CircularProgress />
         <h2>Loading....</h2>
       </div>
@@ -53,10 +54,13 @@ function App() {
       <Newnav />
 
       <Switch>
+
+        {/* HOME */}
         <Route exact path="/">
           <Maincomp />
         </Route>
 
+        {/* AUTH */}
         <Route exact path="/signup">
           <Signup />
         </Route>
@@ -83,25 +87,31 @@ function App() {
           <Buynow />
         </Route>
 
-        {/* CHECKOUT (Customer only) */}
+        {/* CHECKOUT */}
         <Route exact path="/checkout">
           <Checkout />
         </Route>
 
-        {/* CUSTOMER ORDERS / ADMIN ORDERS */}
+        {/* ORDER LIST PAGE */}
         <Route exact path="/orders">
           <Orders />
         </Route>
 
-        {/* ADMIN DASHBOARD */}
+        {/* SINGLE ORDER DETAILS PAGE */}
+        <Route exact path="/orders/:id">
+          <OrderDetails />
+        </Route>
+
+        {/* ADMIN */}
         <Route exact path="/admin">
           <AddProduct />
         </Route>
 
-        {/* ADMIN PAYMENT HISTORY */}
+        {/* ADMIN PAYMENTS */}
         <Route exact path="/admin/payments">
           <AdminPayments />
         </Route>
+
       </Switch>
 
       <Footer />
